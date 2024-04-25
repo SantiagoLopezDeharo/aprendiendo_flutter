@@ -8,7 +8,8 @@ class Dado extends StatefulWidget
 {
   const Dado({super.key});
   @override
-  State<Dado> createState() {
+  State<Dado> createState() 
+  {
     return _DadoState();
   }
 }
