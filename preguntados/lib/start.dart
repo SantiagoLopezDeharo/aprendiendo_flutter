@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
 
-class Start extends StatelessWidget {
+class Start extends StatelessWidget 
+{
+  const Start(this.preguntar, {super.key});
+  
+  final void Function() preguntar;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -19,7 +24,7 @@ class Start extends StatelessWidget {
           height: 66,
         ),
         OutlinedButton(
-          onPressed: () {},
+          onPressed: () {preguntar();},
           child: const Text(
             "Start Quiz",
             style: TextStyle(
