@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 import "package:preguntados/botones.dart";
+import "package:preguntados/quiz.dart";
+import "package:preguntados/resultados.dart";
 import "data/questions.dart";
 import "package:google_fonts/google_fonts.dart";
 
@@ -13,6 +15,7 @@ class QuestionsScreen extends StatefulWidget {
 
 class _QuestionsScreenState extends State<QuestionsScreen> {
   int i = 0;
+  bool r = false;
   final List<bool> correctos = [];
 
   void contestar(String ans)
@@ -20,19 +23,27 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     setState(() 
     {
       correctos.add(ans == questions[i].answers[0]);
-
-      if (i+1 < questions.length) {i++;}
-      else
-      {
-
-      }
-      
+      i++;
       //print(correctos);
     });
   }
 
+  void restart()
+  {
+    setState(() {
+      r = true;
+      i = 0;
+    });
+    
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    if (i >= questions.length)
+      return Resultados(correctos, restart);
+    if (r)
+      return Quiz();
     final preguntaActual = questions[i];
 
     return Container(
