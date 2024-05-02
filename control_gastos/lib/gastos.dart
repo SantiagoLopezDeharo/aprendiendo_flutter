@@ -1,3 +1,4 @@
+import 'package:control_gastos/new_gasto.dart';
 import 'package:flutter/material.dart';
 import 'package:control_gastos/modelos/gasto.dart';
 import 'package:control_gastos/lista_gastos.dart';
@@ -26,7 +27,7 @@ class _Gastos extends State<Gastos> {
 
   void _abrirAddGastoOverlay()
   {
-    //showModalBottomSheet(context: context, builder: builder)
+    showModalBottomSheet(context: context, builder: (ctx) => const NewGasto(),);
   }
 
   @override
