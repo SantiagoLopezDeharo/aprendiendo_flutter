@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:control_gastos/modelos/gasto.dart';
 
 class NewGasto extends StatefulWidget {
-  const NewGasto({super.key});
+  const NewGasto({super.key, required this.onAddGasto});
+
+  final void Function(Gasto gasto) onAddGasto;
 
   @override
   State<NewGasto> createState() {
@@ -29,16 +31,44 @@ class _NewGastoState extends State<NewGasto> {
         context: context,
         firstDate: DateTime(now.year, now.month, 1),
         lastDate: now);
-    if (newFecha != null){
+    if (newFecha != null) {
       setState(() {
         _newfecha = newFecha;
-      });}
+      });
+    }
+  }
+
+  void _submitGasto() {
+    if (_controladorTitulo.text.trim().isEmpty ||
+        (double.tryParse(_controladorCant.text) == null) ||
+        (double.tryParse(_controladorCant.text)! < 0 || (_newfecha == null))) {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: const Text("Datos invalidos"),
+                content: const Text("Asegurese de no dejar vacío níngun campo"),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                      },
+                      child: const Text("Ok")),
+                ],
+              ));
+      return;
+    }
+    widget.onAddGasto(Gasto(
+        title: _controladorTitulo.text,
+        amount: double.tryParse(_controladorCant.text)!,
+        date: _newfecha!,
+        categoria: _newCategoria));
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 21, 16, 16),
       child: Column(
         children: [
           TextField(
@@ -72,18 +102,24 @@ class _NewGastoState extends State<NewGasto> {
               ))
             ],
           ),
-          const SizedBox(height: 18,),
+          const SizedBox(
+            height: 18,
+          ),
           Row(
             children: [
               DropdownButton(
-                value: _newCategoria,
-                items: Categoria.values.map((c) => DropdownMenuItem(value:c , child: Text(c.name.toUpperCase()))).toList(), 
-                onChanged: (value) {
-                  if(value != null){
-                  setState(() {
-                    _newCategoria = value!;
-                  });}
-                }),
+                  value: _newCategoria,
+                  items: Categoria.values
+                      .map((c) => DropdownMenuItem(
+                          value: c, child: Text(c.name.toUpperCase())))
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        _newCategoria = value!;
+                      });
+                    }
+                  }),
               const Spacer(),
               TextButton(
                   onPressed: () {
@@ -91,11 +127,7 @@ class _NewGastoState extends State<NewGasto> {
                   },
                   child: const Text("Cancelar")),
               ElevatedButton(
-                  onPressed: () {
-                    print(
-                        "${_controladorTitulo.text} : ${_controladorCant.text}");
-                  },
-                  child: const Text("Guardar gasto")),
+                  onPressed: _submitGasto, child: const Text("Guardar gasto")),
             ],
           )
         ],

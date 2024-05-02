@@ -2,7 +2,6 @@ import 'package:control_gastos/new_gasto.dart';
 import 'package:flutter/material.dart';
 import 'package:control_gastos/modelos/gasto.dart';
 import 'package:control_gastos/lista_gastos.dart';
-import 'package:flutter/widgets.dart';
 
 class Gastos extends StatefulWidget {
   @override
@@ -25,17 +24,32 @@ class _Gastos extends State<Gastos> {
         categoria: Categoria.placer),
   ];
 
-  void _abrirAddGastoOverlay()
-  {
-    showModalBottomSheet(context: context, builder: (ctx) => const NewGasto(),);
+  void _addGasto(Gasto gasto) {
+    setState(() {
+      _gastosRegistrados.add(gasto);
+    });
+  }
+
+  void _abrirAddGastoOverlay() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => NewGasto(onAddGasto: _addGasto),
+      //isScrollControlled: true,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Seguimiento de gastos", textAlign: TextAlign.center,),
-        actions: [IconButton(onPressed: _abrirAddGastoOverlay, icon: const Icon(Icons.add))],
+        title: const Text(
+          "Seguimiento de gastos",
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          IconButton(
+              onPressed: _abrirAddGastoOverlay, icon: const Icon(Icons.add))
+        ],
       ),
       body: Center(
         child: Column(
