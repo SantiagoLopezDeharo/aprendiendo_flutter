@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:control_gastos/modelos/gasto.dart';
 
 class NewGasto extends StatefulWidget {
   const NewGasto({super.key});
@@ -13,6 +13,8 @@ class NewGasto extends StatefulWidget {
 class _NewGastoState extends State<NewGasto> {
   final _controladorTitulo = TextEditingController();
   final _controladorCant = TextEditingController();
+  DateTime? _newfecha = DateTime.now();
+  Categoria _newCategoria = Categoria.comida;
 
   @override
   void dispose() {
@@ -21,10 +23,16 @@ class _NewGastoState extends State<NewGasto> {
     super.dispose();
   }
 
-  void _mostrarCalendario()
-  {
+  void _mostrarCalendario() async {
     final now = DateTime.now();
-    showDatePicker(context: context, firstDate: DateTime(now.year, now.month, 1), lastDate: now);
+    final newFecha = await showDatePicker(
+        context: context,
+        firstDate: DateTime(now.year, now.month, 1),
+        lastDate: now);
+    if (newFecha != null){
+      setState(() {
+        _newfecha = newFecha;
+      });}
   }
 
   @override
@@ -52,18 +60,36 @@ class _NewGastoState extends State<NewGasto> {
                   ),
                 ),
               ),
-              Expanded(child: 
-              Row(
+              Expanded(
+                  child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                Text("Selected Date"),
-                IconButton(onPressed: _mostrarCalendario, icon: const Icon(Icons.calendar_month)),
-              ],))
+                  Text(formatter.format(_newfecha!)),
+                  IconButton(
+                      onPressed: _mostrarCalendario,
+                      icon: const Icon(Icons.calendar_month)),
+                ],
+              ))
             ],
           ),
+          const SizedBox(height: 18,),
           Row(
             children: [
-              TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Cancelar")),
+              DropdownButton(
+                value: _newCategoria,
+                items: Categoria.values.map((c) => DropdownMenuItem(value:c , child: Text(c.name.toUpperCase()))).toList(), 
+                onChanged: (value) {
+                  if(value != null){
+                  setState(() {
+                    _newCategoria = value!;
+                  });}
+                }),
+              const Spacer(),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Cancelar")),
               ElevatedButton(
                   onPressed: () {
                     print(
