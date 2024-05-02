@@ -30,6 +30,12 @@ class _Gastos extends State<Gastos> {
     });
   }
 
+  void _removeGasto(Gasto gasto) {
+    setState(() {
+      _gastosRegistrados.remove(gasto);
+    });
+  }
+
   void _abrirAddGastoOverlay() {
     showModalBottomSheet(
       context: context,
@@ -56,7 +62,11 @@ class _Gastos extends State<Gastos> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text("Las graficas"),
-            Expanded(child: ListaGastos(gastos: _gastosRegistrados)),
+            Expanded(
+                child: ListaGastos(
+              gastos: _gastosRegistrados,
+              onRemoveGasto: _removeGasto,
+            )),
           ],
         ),
       ),
