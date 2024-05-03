@@ -1,3 +1,4 @@
+import 'package:control_gastos/grafica.dart';
 import 'package:control_gastos/new_gasto.dart';
 import 'package:flutter/material.dart';
 import 'package:control_gastos/modelos/gasto.dart';
@@ -85,7 +86,7 @@ class _Gastos extends State<Gastos> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Las graficas"),
+            Grafica(expenses: _gastosRegistrados),
             Expanded(
                 child: mainContent,
             ),

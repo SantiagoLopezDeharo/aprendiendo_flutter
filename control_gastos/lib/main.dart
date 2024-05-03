@@ -21,7 +21,11 @@ class MyApp extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: KDarkColorScheme.primaryContainer,
             ),
-          )
+          ),
+          cardTheme: const CardTheme().copyWith(
+            color: KDarkColorScheme.secondaryContainer,
+            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 9),
+          ),
         ),
         theme: ThemeData().copyWith(
           colorScheme: KColorScheme,
