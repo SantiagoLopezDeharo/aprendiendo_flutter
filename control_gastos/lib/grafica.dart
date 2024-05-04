@@ -45,7 +45,7 @@ class Grafica extends StatelessWidget {
         horizontal: 8,
       ),
       width: double.infinity,
-      height: 240,
+      height: MediaQuery.of(context).size.width < 600 ? 240 :  MediaQuery.of(context).size.height*(2/3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(36),
         gradient: LinearGradient(

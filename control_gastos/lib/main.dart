@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:control_gastos/gastos.dart';
+//import 'package:flutter/services.dart';
 
 var KColorScheme =
     ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 144, 227, 167));
 var KDarkColorScheme = ColorScheme.fromSeed(brightness: Brightness.dark, seedColor: const Color.fromARGB(255, 47, 70, 54));
 void main() {
+  //WidgetsFlutterBinding.ensureInitialized();
+  //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((fn) {});
+  
   runApp(const MyApp());
 }
 

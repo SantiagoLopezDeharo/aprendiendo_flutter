@@ -3,6 +3,7 @@ import 'package:control_gastos/new_gasto.dart';
 import 'package:flutter/material.dart';
 import 'package:control_gastos/modelos/gasto.dart';
 import 'package:control_gastos/lista_gastos.dart';
+import 'package:flutter/widgets.dart';
 
 class Gastos extends StatefulWidget {
   @override
@@ -32,7 +33,6 @@ class _Gastos extends State<Gastos> {
   }
 
   void _removeGasto(Gasto gasto) {
-
     final index = _gastosRegistrados.indexOf(gasto);
     setState(() {
       _gastosRegistrados.remove(gasto);
@@ -47,13 +47,14 @@ class _Gastos extends State<Gastos> {
           setState(() {
             _gastosRegistrados.insert(index, gasto);
           });
-        },),
-      )
-      );
+        },
+      ),
+    ));
   }
 
   void _abrirAddGastoOverlay() {
     showModalBottomSheet(
+      isScrollControlled: MediaQuery.of(context).size.width >= 600,
       context: context,
       builder: (ctx) => NewGasto(onAddGasto: _addGasto),
       //isScrollControlled: true,
@@ -62,13 +63,16 @@ class _Gastos extends State<Gastos> {
 
   @override
   Widget build(BuildContext context) {
-    Widget mainContent = const Center(child: Text("No se encontraron gastos."),);
-    if(_gastosRegistrados.isNotEmpty)
-    {
+    final width = MediaQuery.of(context).size.width;
+
+    Widget mainContent = const Center(
+      child: Text("No se encontraron gastos."),
+    );
+    if (_gastosRegistrados.isNotEmpty) {
       mainContent = ListaGastos(
-              gastos: _gastosRegistrados,
-              onRemoveGasto: _removeGasto,
-            );
+        gastos: _gastosRegistrados,
+        onRemoveGasto: _removeGasto,
+      );
     }
 
     return Scaffold(
@@ -83,15 +87,26 @@ class _Gastos extends State<Gastos> {
         ],
       ),
       body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Grafica(expenses: _gastosRegistrados),
-            Expanded(
-                child: mainContent,
-            ),
-          ],
-        ),
+        child: width < 600
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Grafica(expenses: _gastosRegistrados),
+                  Expanded(
+                    child: mainContent,
+                  ),
+                ],
+              )
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(child: Grafica(expenses: _gastosRegistrados)),
+                  const SizedBox(width: 60,),
+                  Expanded(
+                    child: mainContent,
+                  ),
+                ],
+              ),
       ),
     );
   }

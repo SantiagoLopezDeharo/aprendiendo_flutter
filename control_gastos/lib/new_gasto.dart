@@ -129,7 +129,7 @@ class _NewGastoState extends State<NewGasto> {
               ElevatedButton(
                   onPressed: _submitGasto, child: const Text("Guardar gasto")),
             ],
-          )
+          ),
         ],
       ),
     );
