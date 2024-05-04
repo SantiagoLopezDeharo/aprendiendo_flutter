@@ -77,6 +77,7 @@ class _Gastos extends State<Gastos> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           "Seguimiento de gastos",
           textAlign: TextAlign.center,

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:control_gastos/modelos/gasto.dart';
 
@@ -42,9 +43,9 @@ class _NewGastoState extends State<NewGasto> {
     if (_controladorTitulo.text.trim().isEmpty ||
         (double.tryParse(_controladorCant.text) == null) ||
         (double.tryParse(_controladorCant.text)! < 0 || (_newfecha == null))) {
-      showDialog(
+      showCupertinoDialog(
           context: context,
-          builder: (ctx) => AlertDialog(
+          builder: (ctx) => CupertinoAlertDialog(
                 title: const Text("Datos invalidos"),
                 content: const Text("Asegurese de no dejar vacío níngun campo"),
                 actions: [
@@ -52,7 +53,7 @@ class _NewGastoState extends State<NewGasto> {
                       onPressed: () {
                         Navigator.pop(ctx);
                       },
-                      child: const Text("Ok")),
+                      child: const Text("Entendido")),
                 ],
               ));
       return;

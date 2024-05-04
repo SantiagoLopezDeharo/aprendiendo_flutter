@@ -8,7 +8,7 @@ var KDarkColorScheme = ColorScheme.fromSeed(brightness: Brightness.dark, seedCol
 void main() {
   //WidgetsFlutterBinding.ensureInitialized();
   //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((fn) {});
-  
+
   runApp(const MyApp());
 }
 
