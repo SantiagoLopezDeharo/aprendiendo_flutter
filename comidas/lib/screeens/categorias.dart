@@ -1,20 +1,26 @@
 import 'package:comidas/modelos/categoria.dart';
+import 'package:comidas/modelos/comida.dart';
 import 'package:comidas/screeens/comidas.dart';
 import 'package:comidas/widgets/categoria_grid_item.dart';
 import 'package:flutter/material.dart';
 import 'package:comidas/Data/dummy_data.dart';
 
 class CategoriasScreen extends StatelessWidget {
-  const CategoriasScreen({super.key});
-
+  const CategoriasScreen({super.key, required this.onFav});
+  final void Function(Comida comida) onFav;
   void _seleccionarCategoria(BuildContext context, Categoria categoria) {
-    
-    final comidasF = dummyComidas.where((element) => element.categorias.contains(categoria.id)).toList();
+    final comidasF = dummyComidas
+        .where((element) => element.categorias.contains(categoria.id))
+        .toList();
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (ctx) => ComidasScreen(title: categoria.title, comidas: comidasF),
+        builder: (ctx) => ComidasScreen(
+          title: categoria.title,
+          comidas: comidasF,
+          onFav: onFav,
+        ),
       ),
     );
   }
@@ -28,10 +34,11 @@ class CategoriasScreen extends StatelessWidget {
         body: GridView(
           padding: const EdgeInsets.all(16),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1.5,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20),
+            crossAxisCount: 2,
+            childAspectRatio: 1.5,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+          ),
           children: [
             for (final i in availableCategorias)
               CategoriaGridItem(

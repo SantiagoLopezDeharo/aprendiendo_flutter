@@ -2,8 +2,9 @@ import 'package:comidas/modelos/comida.dart';
 import 'package:flutter/material.dart';
 
 class ComidaScreen extends StatelessWidget {
-  const ComidaScreen({super.key, required this.comida});
+  const ComidaScreen({super.key, required this.comida, required this.onFav});
   final Comida comida;
+  final void Function(Comida comida) onFav;
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,14 @@ class ComidaScreen extends StatelessWidget {
             fontSize: 21,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              onFav(comida);
+            },
+            icon: const Icon(Icons.favorite),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -46,10 +55,9 @@ class ComidaScreen extends StatelessWidget {
                       color: Theme.of(context).colorScheme.onBackground,
                     ),
               ),
-              const SizedBox(
+            const SizedBox(
               height: 24,
             ),
-        
             Text(
               "Steps",
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -62,7 +70,8 @@ class ComidaScreen extends StatelessWidget {
             ),
             for (final step in comida.steps)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 child: Text(
                   step,
                   textAlign: TextAlign.center,
@@ -71,7 +80,6 @@ class ComidaScreen extends StatelessWidget {
                       ),
                 ),
               ),
-        
           ],
         ),
       ),
