@@ -1,4 +1,5 @@
 import 'package:comidas/modelos/comida.dart';
+import 'package:comidas/widgets/comida_item.dart';
 import 'package:flutter/material.dart';
 
 class ComidasScreen extends StatelessWidget {
@@ -10,7 +11,7 @@ class ComidasScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget content = ListView.builder(
         itemCount: comidas.length,
-        itemBuilder: (ctx, indx) => Text(comidas[indx].title, style: const TextStyle(color: Colors.white),));
+        itemBuilder: (ctx, indx) => ComidaItem(comida: comidas[indx]));
 
     if (comidas.isEmpty) {
       content = Container(
@@ -19,7 +20,9 @@ class ComidasScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Parece que no hay comidas en esta seccion .....",
+              Text(
+                  textAlign: TextAlign.center,
+                  "Parece que no hay comidas en esta seccion .....",
                   style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground)),
               const SizedBox(
@@ -27,10 +30,8 @@ class ComidasScreen extends StatelessWidget {
               ),
               Text(
                 "Intenta ver otra categoria!",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge!
-                    .copyWith(color: Theme.of(context).colorScheme.onBackground),
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground),
               )
             ],
           ),
