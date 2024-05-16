@@ -1,4 +1,6 @@
 import 'package:comidas/modelos/comida.dart';
+import 'package:comidas/screeens/comida.dart';
+import 'package:comidas/widgets/comida_item_caract.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -16,7 +18,12 @@ class ComidaItem extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       elevation: 2,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (ctx) => ComidaScreen(comida: comida) )
+            );
+        },
         child: Stack(
           children: [
             FadeInImage(
@@ -49,7 +56,14 @@ class ComidaItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Row(
-                      children: [],
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ComidaItemProp(icon: Icons.schedule, label: "${comida.duration} min"),
+                        const SizedBox(width: 12,),
+                        ComidaItemProp(icon: Icons.work, label: comida.complejidad.name),
+                        const SizedBox(width: 12,),
+                        ComidaItemProp(icon: Icons.attach_money, label: comida.precio.name),
+                      ],
                     )
                   ],
                 ),
