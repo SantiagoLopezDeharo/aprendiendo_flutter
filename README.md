@@ -7,7 +7,7 @@ This repo is a collection of small examples of the different usage of flutter as
 
 ## Tech Stack
 
-**Server:** Dart, Flutter
+Dart, Flutter
 
 
 
