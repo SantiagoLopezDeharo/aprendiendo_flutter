@@ -1,6 +1,6 @@
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Flutter_logo.svg/2048px-Flutter_logo.svg.png" width="250">
 
-# Sample Web apps built with Java on Spring 
+# Sample Mobile and Web apps built with Flutter
 
 This repo is a collection of small examples of the different usage of flutter as a tool for developing Mobile and Web apps using the same code base, this collection of sample codes where made while completing a Flutter course in Udemy.
 
