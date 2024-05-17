@@ -1,3 +1,11 @@
+enum Filtros
+{
+  glutenFree,
+  lactoseFree,
+  vegan,
+  vegetarian,
+}
+
 enum Complejidad {
   simple,
   mediana,

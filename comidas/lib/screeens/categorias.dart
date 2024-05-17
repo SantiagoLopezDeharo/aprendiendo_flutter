@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:comidas/Data/dummy_data.dart';
 
 class CategoriasScreen extends StatelessWidget {
-  const CategoriasScreen({super.key, required this.onFav});
+  const CategoriasScreen({super.key, required this.onFav, required this.comidas});
   final void Function(Comida comida) onFav;
+  final List<Comida> comidas;
+
   void _seleccionarCategoria(BuildContext context, Categoria categoria) {
-    final comidasF = dummyComidas
+    final comidasF = comidas
         .where((element) => element.categorias.contains(categoria.id))
         .toList();
 
@@ -48,4 +50,7 @@ class CategoriasScreen extends StatelessWidget {
           ],
         ));
   }
+}
+
+class Comidas {
 }
