@@ -5,12 +5,39 @@ import 'package:comidas/widgets/categoria_grid_item.dart';
 import 'package:flutter/material.dart';
 import 'package:comidas/Data/dummy_data.dart';
 
-class CategoriasScreen extends StatelessWidget {
+class CategoriasScreen extends StatefulWidget {
   const CategoriasScreen({super.key, required this.comidas});
   final List<Comida> comidas;
 
+  @override
+  State<CategoriasScreen> createState() => _CategoriasScreenState();
+}
+
+class _CategoriasScreenState extends State<CategoriasScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+      lowerBound: 0,
+      upperBound: 1,
+    );
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void _seleccionarCategoria(BuildContext context, Categoria categoria) {
-    final comidasF = comidas
+    final comidasF = widget.comidas
         .where((element) => element.categorias.contains(categoria.id))
         .toList();
 
@@ -27,7 +54,9 @@ class CategoriasScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AnimatedBuilder(
+      animation: _animationController,
+      child: Scaffold(
         appBar: AppBar(
           title: const Text("Elige la categoria"),
         ),
@@ -46,9 +75,14 @@ class CategoriasScreen extends StatelessWidget {
                 onSeleccion: () => {_seleccionarCategoria(context, i)},
               )
           ],
-        ));
+        ),
+      ),
+      builder: (ctx, child) => Padding(
+        child: child,
+        padding: EdgeInsets.only(top: 100 -_animationController.value*100),
+        ),
+    );
   }
 }
 
-class Comidas {
-}
+class Comidas {}
