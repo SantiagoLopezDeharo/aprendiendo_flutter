@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:comidas/Data/dummy_data.dart';
 
 class CategoriasScreen extends StatelessWidget {
-  const CategoriasScreen({super.key, required this.onFav, required this.comidas});
-  final void Function(Comida comida) onFav;
+  const CategoriasScreen({super.key, required this.comidas});
   final List<Comida> comidas;
 
   void _seleccionarCategoria(BuildContext context, Categoria categoria) {
@@ -21,7 +20,6 @@ class CategoriasScreen extends StatelessWidget {
         builder: (ctx) => ComidasScreen(
           title: categoria.title,
           comidas: comidasF,
-          onFav: onFav,
         ),
       ),
     );

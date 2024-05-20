@@ -1,13 +1,14 @@
 import 'package:comidas/modelos/comida.dart';
+import 'package:comidas/providers/fav_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ComidaScreen extends StatelessWidget {
-  const ComidaScreen({super.key, required this.comida, required this.onFav});
+class ComidaScreen extends ConsumerWidget {
+  const ComidaScreen({super.key, required this.comida});
   final Comida comida;
-  final void Function(Comida comida) onFav;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -20,7 +21,7 @@ class ComidaScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              onFav(comida);
+              ref.read(favProvider.notifier).toggleComidaFavStatus(comida);
             },
             icon: const Icon(Icons.favorite),
           ),

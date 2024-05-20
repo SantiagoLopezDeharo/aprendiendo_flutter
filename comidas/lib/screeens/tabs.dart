@@ -1,22 +1,24 @@
 import 'package:comidas/Data/dummy_data.dart';
 import 'package:comidas/modelos/comida.dart';
+import 'package:comidas/providers/comidas_providers.dart';
+import 'package:comidas/providers/fav_provider.dart';
 import 'package:comidas/screeens/categorias.dart';
 import 'package:comidas/screeens/comidas.dart';
 import 'package:comidas/screeens/filtros.dart';
 import 'package:comidas/widgets/MenuW.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
   @override
-  State<TabsScreen> createState() {
+  ConsumerState<TabsScreen> createState() {
     return _TabsScreenState();
   }
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
-  final List<Comida> _fav = [];
   Map<Filtros, bool> filtrosValores = {
     Filtros.glutenFree: false,
     Filtros.lactoseFree: false,
@@ -25,16 +27,6 @@ class _TabsScreenState extends State<TabsScreen> {
   };
 
   List<Comida> comidas = dummyComidas;
-
-  void _favStatus(Comida comida) {
-    final isExisting = _fav.contains(comida);
-    setState(() {
-      if (isExisting)
-        _fav.remove(comida);
-      else
-        _fav.add(comida);
-    });
-  }
 
   void _selectPage(int indx) {
     setState(() {
@@ -48,7 +40,6 @@ class _TabsScreenState extends State<TabsScreen> {
       builder: (ctx) => ComidasScreen(
         title: "Comidas",
         comidas: comidas,
-        onFav: _favStatus,
       ),
     ));
   }
@@ -61,7 +52,7 @@ class _TabsScreenState extends State<TabsScreen> {
                   valores: filtrosValores,
                 ))))!;
     setState(() {
-      comidas = dummyComidas.where( (i)
+      comidas = ref.watch(comidasProvider).where( (i)
     {
       if (filtrosValores[Filtros.glutenFree]! && !i.isGlutenFree)
         return false;
@@ -80,16 +71,17 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     Widget activePage = CategoriasScreen(
-      onFav: _favStatus,
       comidas: comidas,
     );
 
     if (_selectedPageIndex == 1)
+    {
+      final _fav = ref.watch(favProvider);
       activePage = ComidasScreen(
         title: "Favorites",
         comidas: _fav,
-        onFav: _favStatus,
       );
+    }
 
     return Scaffold(
       drawer: MenuW(

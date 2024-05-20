@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ComidaItem extends StatelessWidget {
-  const ComidaItem({super.key, required this.comida, required this.onFav});
+  const ComidaItem({super.key, required this.comida});
   final Comida comida;
-  final void Function(Comida comida) onFav;
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -22,7 +20,7 @@ class ComidaItem extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (ctx) => ComidaScreen(comida: comida, onFav: onFav,),)
+            MaterialPageRoute(builder: (ctx) => ComidaScreen(comida: comida,),)
             );
         },
         child: Stack(
