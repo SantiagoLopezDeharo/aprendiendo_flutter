@@ -77,10 +77,15 @@ class _CategoriasScreenState extends State<CategoriasScreen>
           ],
         ),
       ),
-      builder: (ctx, child) => Padding(
-        child: child,
-        padding: EdgeInsets.only(top: 100 -_animationController.value*100),
+      builder: (ctx, child) => SlideTransition(
+        position: _animationController.drive(
+          Tween(
+            begin: const Offset(0, 0.2),
+            end: const Offset(0, 0),
+          ),
         ),
+        child: child,
+      ),
     );
   }
 }
