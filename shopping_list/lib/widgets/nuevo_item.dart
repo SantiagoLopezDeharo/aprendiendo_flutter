@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shopping_list/data/categorias.dart';
 import 'package:shopping_list/modelos/categoria.dart';
 import 'package:shopping_list/modelos/comida_item.dart';
+import 'package:http/http.dart' as http;
 
 class NuevoItem extends StatefulWidget {
   const NuevoItem({super.key});
@@ -14,18 +17,31 @@ class NuevoItem extends StatefulWidget {
 
 class _NuevoItemState extends State<NuevoItem> {
   final _formKey = GlobalKey<FormState>();
+  bool mandando = false;
 
-  void _guardarItem() {
+  void _guardarItem() async {
+    setState(() {
+      mandando = true;
+    });
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Navigator.of(context).pop(
-        ComidaItem(
-          id: DateTime.now().toString(),
-          name: _nombre,
-          quantity: _cantidad,
-          categoria: _categoria,
+      final url = Uri.https("shoppinglist-3abe6-default-rtdb.firebaseio.com",
+          "shopping-list.json");
+      http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode(
+          {
+            "name": _nombre,
+            "quantity": _cantidad,
+            "categoria": _categoria.titulo,
+          },
         ),
       );
+
+      Navigator.of(context).pop();
     }
   }
 
@@ -128,8 +144,8 @@ class _NuevoItemState extends State<NuevoItem> {
                       },
                       child: const Text("Resetear")),
                   ElevatedButton(
-                      onPressed: _guardarItem,
-                      child: const Text("Agregar item")),
+                      onPressed: mandando ? null : _guardarItem,
+                      child: mandando ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(),) : const Text("Agregar item")),
                 ],
               )
             ],

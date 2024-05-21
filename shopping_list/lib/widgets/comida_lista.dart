@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_list/data/dummy_items.dart';
+import 'package:shopping_list/data/categorias.dart';
+import 'package:shopping_list/modelos/comida_item.dart';
 import 'package:shopping_list/widgets/Nuevo_item.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ComidaLista extends StatefulWidget {
   const ComidaLista({super.key});
@@ -10,7 +13,44 @@ class ComidaLista extends StatefulWidget {
 }
 
 class _ComidaListaState extends State<ComidaLista> {
-  final _list = [];
+  final url = Uri.https("shoppinglist-3abe6-default-rtdb.firebaseio.com",
+          "shopping-list.json");
+  List<ComidaItem> _list = [];
+  
+  void eliminarItem(ComidaItem it)
+  {
+    final url = Uri.https("shoppinglist-3abe6-default-rtdb.firebaseio.com",
+          "shopping-list/${it.id}.json");
+    http.delete(url);
+  }
+
+  void _cargarItems() async
+  {
+    final response = await http.get(url);
+    final Map<String, dynamic> Lista = json.decode(response.body);
+    final List<ComidaItem> _list2 = [];
+    for (final it in Lista.entries)
+    {
+      final cat = categorias.entries.firstWhere((cit) => cit.value.titulo == it.value["categoria"]).value;
+      _list2.add(ComidaItem(
+        id: it.key, 
+        name: it.value["name"], 
+        quantity: it.value["quantity"], 
+        categoria: cat));
+    }
+
+    setState(() {
+      _list = _list2;
+    });
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    _cargarItems();
+
+  }
+  
   @override
   Widget build(BuildContext context) {
     Widget content = const Center(
@@ -23,6 +63,7 @@ class _ComidaListaState extends State<ComidaLista> {
           onDismissed: (direction) {
             setState(() {
               _list.remove(_list[indx]);
+              eliminarItem(_list[indx]);
             });
           },
           key: ValueKey(_list[indx].id),
@@ -43,12 +84,9 @@ class _ComidaListaState extends State<ComidaLista> {
         actions: [
           IconButton(
               onPressed: () async {
-                final ni = await Navigator.of(context).push(
+                await Navigator.of(context).push(
                     MaterialPageRoute(builder: (ctx) => const NuevoItem()));
-                if (ni == null) return;
-                setState(() {
-                  _list.add(ni);
-                });
+                    _cargarItems();
               },
               icon: const Icon(Icons.add)),
         ],
