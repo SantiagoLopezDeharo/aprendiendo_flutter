@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lugares_favoritos/modelos/lugar.dart';
 import 'package:lugares_favoritos/providers/lugares_usuario.dart';
 import 'package:lugares_favoritos/widgets/image_input.dart';
+import 'package:lugares_favoritos/widgets/ubicacion_input.dart';
 
 class AgregarLugarScreen extends ConsumerStatefulWidget {
   const AgregarLugarScreen({super.key});
@@ -14,13 +18,16 @@ class AgregarLugarScreen extends ConsumerStatefulWidget {
 
 class _AgregarLugarState extends ConsumerState<AgregarLugarScreen> {
   final _tituloController = TextEditingController();
-
+  File? _imagen;
+  LugarUbicacion? _ubicacion;
   void _guardarLugar()
   {
     final texto = _tituloController.text;
-    if (texto.isEmpty)
+    if (texto.isEmpty || _imagen == null || _ubicacion == null)
       return;
-    ref.read(LugaresUsuarioProvider.notifier).agregarLugar(texto);
+    ref
+      .read(LugaresUsuarioProvider.notifier)
+      .agregarLugar(texto, _imagen!, _ubicacion!);
     Navigator.of(context).pop();
 
   }
@@ -49,7 +56,16 @@ class _AgregarLugarState extends ConsumerState<AgregarLugarScreen> {
             const SizedBox(
               height: 16,
             ),
-            const ImageInput(),
+            ImageInput(onPickImage: (img) {
+              _imagen = img;
+            },),
+            const SizedBox(
+              height: 16,
+            ),
+            UbicacionInput(onSleccionUbicacion: (u)
+            {
+              _ubicacion = u;
+            },),
             const SizedBox(
               height: 16,
             ),

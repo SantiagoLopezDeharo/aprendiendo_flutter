@@ -19,18 +19,24 @@ class Listado extends StatelessWidget {
       );
 
     return ListView.builder(
-        itemCount: lugares.length,
-        itemBuilder: (ctx, indx) => ListTile(
-              onTap: ()
-              {
-                Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => LugaresDetallesScreen(lugar: lugares[indx])));
-              },
-              title: Text(
-                lugares[indx].title,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
+      itemCount: lugares.length,
+      itemBuilder: (ctx, indx) => ListTile(
+        leading: CircleAvatar(
+          radius: 26,
+          backgroundImage: FileImage(lugares[indx].imagen),
+        ),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (ctx) => LugaresDetallesScreen(lugar: lugares[indx])));
+        },
+        title: Text(
+          lugares[indx].title,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: Theme.of(context).colorScheme.onBackground,
               ),
-            ));
+        ),
+        subtitle: Text("latitude ${lugares[indx].ubicacion.latitude}, longitud ${lugares[indx].ubicacion.longitude}"),
+      ),
+    );
   }
 }
