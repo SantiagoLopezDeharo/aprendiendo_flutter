@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lugares_favoritos/providers/lugares_usuario.dart';
+import 'package:lugares_favoritos/widgets/image_input.dart';
 
 class AgregarLugarScreen extends ConsumerStatefulWidget {
   const AgregarLugarScreen({super.key});
@@ -45,6 +46,10 @@ class _AgregarLugarState extends ConsumerState<AgregarLugarScreen> {
               controller: _tituloController,
               style: const TextStyle(color: Colors.white),
             ),
+            const SizedBox(
+              height: 16,
+            ),
+            const ImageInput(),
             const SizedBox(
               height: 16,
             ),
