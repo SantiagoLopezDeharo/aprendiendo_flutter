@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:lugares_favoritos/modelos/lugar.dart';
+import 'package:lugares_favoritos/pantallas/mapa.dart';
 
 class UbicacionInput extends StatefulWidget {
   const UbicacionInput({super.key, required this.onSleccionUbicacion});
@@ -32,7 +33,6 @@ class _UbicacionInputState extends State<UbicacionInput> {
         return;
       }
     }
-
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
@@ -46,17 +46,31 @@ class _UbicacionInputState extends State<UbicacionInput> {
     locationData = await location.getLocation();
     var lat = locationData.latitude;
     var lon = locationData.longitude;
-    if (lat == null || lon == null)
-      return;
+    if (lat == null || lon == null) return;
 
     setState(() {
-        _ubicacion = LugarUbicacion(
+      _ubicacion = LugarUbicacion(
         latitude: lat,
         longitude: lon,
       );
       _leyendoUbicacion = false;
     });
-    
+
+    widget.onSleccionUbicacion(_ubicacion!);
+  }
+
+  void _mapa() async {
+    LatLng? location = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => const MapScreen()));
+    if (location == null) return;
+
+    setState(() {
+      _ubicacion = LugarUbicacion(
+        latitude: location!.latitude,
+        longitude: location!.longitude,
+      );
+    });
+
     widget.onSleccionUbicacion(_ubicacion!);
   }
 
@@ -72,17 +86,16 @@ class _UbicacionInputState extends State<UbicacionInput> {
 
     if (_ubicacion != null) {
       content = FlutterMap(
-      options: MapOptions(
-        center: LatLng(_ubicacion!.latitude, _ubicacion!.longitude),
-        zoom: 15.0,
-      ),
-      children: [
-        TileLayer(
-          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: ['a', 'b', 'c'],
+        options: MapOptions(
+          center: LatLng(_ubicacion!.latitude, _ubicacion!.longitude),
+          zoom: 15.0,
         ),
-      ],
-    );
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          ),
+        ],
+      );
     }
 
     if (_leyendoUbicacion) content = const CircularProgressIndicator();
@@ -104,12 +117,12 @@ class _UbicacionInputState extends State<UbicacionInput> {
           children: [
             TextButton.icon(
               onPressed: _ubicacionActual,
-              label: const Text("Agarrar ubicacion actúal"),
+              label: const Text("Ubicacion actúal"),
               icon: const Icon(Icons.location_on),
             ),
             TextButton.icon(
-              onPressed: () {},
-              label: const Text("Seleccionar en el mapa"),
+              onPressed: _mapa,
+              label: const Text("Mapa"),
               icon: const Icon(Icons.map),
             )
           ],

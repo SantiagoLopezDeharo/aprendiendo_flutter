@@ -15,7 +15,7 @@ class LugarUbicacion
 
 class Lugar
 {
-  Lugar( {required this.title, required this.imagen, required this.ubicacion,}) : id = uuid.v4();
+  Lugar( {required this.title, required this.imagen, required this.ubicacion, String ? id}) : id = id ?? uuid.v4();
 
   final String id;
   final String title;

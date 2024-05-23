@@ -64,7 +64,9 @@ class LugaresDetallesScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                       textAlign: TextAlign.center,
-                      "latitude ${lugar.ubicacion.latitude}, longitud ${lugar.ubicacion.longitude}"),
+                      "latitude ${lugar.ubicacion.latitude}, longitud ${lugar.ubicacion.longitude}",
+                      style: const TextStyle(backgroundColor: Colors.black, color: Colors.white),
+                      ),
                 )
               ],
             ),

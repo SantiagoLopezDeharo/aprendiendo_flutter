@@ -19,7 +19,7 @@ class _ImageInputState extends State<ImageInput> {
   void tomarFoto() async {
     final img = ImagePicker();
     final imagen =
-        await img.pickImage(source: ImageSource.camera, maxWidth: 600);
+        await img.pickImage(source: ImageSource.camera, maxWidth: 1080);
     if (imagen == null) return;
     setState(() {
     _imagen = File(imagen.path);

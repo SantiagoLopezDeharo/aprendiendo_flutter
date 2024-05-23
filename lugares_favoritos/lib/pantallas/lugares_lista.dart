@@ -4,11 +4,24 @@ import 'package:lugares_favoritos/pantallas/agregar_lugar.dart';
 import 'package:lugares_favoritos/providers/lugares_usuario.dart';
 import 'package:lugares_favoritos/widgets/listado.dart';
 
-class LugaresListaScreen extends ConsumerWidget {
+class LugaresListaScreen extends ConsumerStatefulWidget {
   const LugaresListaScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LugaresListaScreen> createState() => _LugaresListaScreenState();
+}
+
+class _LugaresListaScreenState extends ConsumerState<LugaresListaScreen> {
+  late Future<void> _lugarFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _lugarFuture = ref.read(LugaresUsuarioProvider.notifier).loadData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final lugares = ref.watch(LugaresUsuarioProvider);
 
     return Scaffold(
@@ -23,8 +36,12 @@ class LugaresListaScreen extends ConsumerWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body: Listado(
-        lugares: lugares,
+      body: FutureBuilder(
+        future: _lugarFuture,
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? const Center(child: CircularProgressIndicator())
+                : Listado(lugares: lugares),
       ),
     );
   }
