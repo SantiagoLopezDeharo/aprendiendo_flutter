@@ -57,7 +57,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA_eEb_T7v6PBcoVf4d6lTl4tc5vbT7IKM',
-    appId: '1:390062465830:android:03cdc1470ed280646917e7',
+    appId: '1:390062465830:android:1a0e3c1da9d7c3e46917e7',
     messagingSenderId: '390062465830',
     projectId: 'flutter-chat-app-e9407',
     storageBucket: 'flutter-chat-app-e9407.appspot.com',
@@ -71,4 +71,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'flutter-chat-app-e9407.appspot.com',
     iosBundleId: 'com.example.chatApp',
   );
+
 }

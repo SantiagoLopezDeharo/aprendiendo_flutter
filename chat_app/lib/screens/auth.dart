@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+final _firebase = FirebaseAuth.instance;
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -15,15 +18,28 @@ class _AuthScreenState extends State<AuthScreen> {
   var email = "";
   var password = "";
 
-  void _submit()
-  {
+  void _submit() async {
     final isValida = _formKey.currentState!.validate();
-    if(isValida)
-    {
+    if (isValida) {
       _formKey.currentState!.save();
-      print(email);
-      print(password);
-    }
+    try {
+      if (_isLogin) {
+        final userCredentials = await _firebase.signInWithEmailAndPassword(email: email, password: password);
+        print(userCredentials);
+      } else {
+          final userCredentials = await _firebase
+              .createUserWithEmailAndPassword(email: email, password: password);
+          print(userCredentials);
+        }
+        } on FirebaseAuthException catch (e) {
+          if (e.code == "email-already-in-use") {
+            //
+          }
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(e.message ?? "Authentication failed")));
+        }
+      }
   }
 
   @override
@@ -62,14 +78,14 @@ class _AuthScreenState extends State<AuthScreen> {
                             keyboardType: TextInputType.emailAddress,
                             autocorrect: false,
                             textCapitalization: TextCapitalization.none,
-                            validator: (value)
-                            {
-                              if (value == null || value.trim().isEmpty || !value.contains("@"))
+                            validator: (value) {
+                              if (value == null ||
+                                  value.trim().isEmpty ||
+                                  !value.contains("@"))
                                 return "Please enter a valid email addres";
                               return null;
                             },
-                            onSaved: (v)
-                            {
+                            onSaved: (v) {
                               email = v!;
                             },
                           ),
@@ -80,14 +96,12 @@ class _AuthScreenState extends State<AuthScreen> {
                             autocorrect: false,
                             textCapitalization: TextCapitalization.none,
                             obscureText: true,
-                            validator: (value)
-                            {
+                            validator: (value) {
                               if (value == null || value.trim().length < 6)
                                 return "Password must be at least 6 characaters long";
                               return null;
                             },
-                            onSaved: (v)
-                            {
+                            onSaved: (v) {
                               password = v!;
                             },
                           ),
@@ -97,11 +111,11 @@ class _AuthScreenState extends State<AuthScreen> {
                           ElevatedButton(
                             onPressed: _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primaryContainer,
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                             ),
                             child: Text(_isLogin ? "Login" : "Signup"),
-
                           ),
                           TextButton(
                             onPressed: () {
