@@ -18,21 +18,24 @@ class LugaresUsuarioNotifier extends StateNotifier<List<Lugar>> {
       },
       version: 1,
     );
-    final data = await db.query("lugares");
-    final lugares = data.map(
-      (row) =>
-          Lugar(
+    final data = await db.rawQuery(
+    "SELECT * FROM lugares"
+  );
+    final lugares = data
+        .map((row) => Lugar(
             id: row["id"] as String,
-            title: row["title"] as String, 
-            imagen: File(row["image"] as String), 
-            ubicacion: LugarUbicacion(latitude: row["lat"] as double, longitude: row["lng"] as double))
-      ).toList();
+            title: row["title"] as String,
+            imagen: File(row["image"] as String),
+            ubicacion: LugarUbicacion(
+                latitude: row["lat"] as double,
+                longitude: row["lng"] as double)))
+        .toList();
     state = lugares;
   }
 
   void agregarLugar(String title, File imagen, LugarUbicacion ubi) async {
     final appDir = await syspaths.getApplicationDocumentsDirectory();
-    final filename =imagen.path.split('/').last;
+    final filename = imagen.path.split('/').last;
 
     final copia = await imagen.copy("${appDir.path}/$filename");
     final nuevo = Lugar(title: title, imagen: copia, ubicacion: ubi);
@@ -58,7 +61,7 @@ class LugaresUsuarioNotifier extends StateNotifier<List<Lugar>> {
       },
     );
 
-    state = [nuevo, ...state];
+    state = [...state, nuevo];
   }
 }
 
