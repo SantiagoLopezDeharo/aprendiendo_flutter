@@ -1,5 +1,11 @@
+import 'dart:io';
+
+import 'package:chat_app/widgets/user_image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -17,9 +23,13 @@ class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
   var email = "";
   var password = "";
+  File? _img;
 
   void _submit() async {
     final isValida = _formKey.currentState!.validate();
+    if (!_isLogin && _img == null)
+      return;
+
     if (isValida) {
       _formKey.currentState!.save();
     try {
@@ -28,6 +38,18 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
           final userCredentials = await _firebase
               .createUserWithEmailAndPassword(email: email, password: password);
+          final storageRef = FirebaseStorage.instance.ref().child("user_images").child("${userCredentials.user!.uid}.jpg");
+          storageRef.putFile(_img!);
+          final imgUrl = await storageRef.getData();
+          print(imgUrl);
+          await FirebaseFirestore.instance
+            .collection("users")
+            .doc(userCredentials.user!.uid)
+            .set({
+              "username" : "to be done...",
+              "email" : email,
+              "image_url" : imgUrl,
+            });
         }
         } on FirebaseAuthException catch (e) {
           if (e.code == "email-already-in-use") {
@@ -69,6 +91,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if (!_isLogin) UserImagePicker(onPickImage: (img) {
+                            _img = img;
+                          },),
                           TextFormField(
                             decoration: const InputDecoration(
                               labelText: "Email Address",
