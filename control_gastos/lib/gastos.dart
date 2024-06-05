@@ -1,42 +1,34 @@
 import 'package:control_gastos/grafica.dart';
 import 'package:control_gastos/new_gasto.dart';
+import 'package:control_gastos/providers/gastos_usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:control_gastos/modelos/gasto.dart';
 import 'package:control_gastos/lista_gastos.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Gastos extends StatefulWidget {
+class Gastos extends ConsumerStatefulWidget {
   @override
-  State<Gastos> createState() {
+  ConsumerState<Gastos> createState() {
     return _Gastos();
   }
 }
 
-class _Gastos extends State<Gastos> {
-  final List<Gasto> _gastosRegistrados = [
-    Gasto(
-        title: "Curso Flutter",
-        amount: 19.9,
-        date: DateTime.now(),
-        categoria: Categoria.trabajo),
-    Gasto(
-        title: "Pelicula",
-        amount: 15.9,
-        date: DateTime.now(),
-        categoria: Categoria.placer),
-  ];
+class _Gastos extends ConsumerState<Gastos> {
+  late Future<void> _gastosFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _gastosFuture = ref.read(GastosUsuarioProvider.notifier).loadData();
+  }
 
   void _addGasto(Gasto gasto) {
-    setState(() {
-      _gastosRegistrados.add(gasto);
-    });
+    ref.read(GastosUsuarioProvider.notifier).agregarGasto(gasto.id, gasto.title, gasto.amount, gasto.date, gasto.categoria);
   }
 
   void _removeGasto(Gasto gasto) {
-    final index = _gastosRegistrados.indexOf(gasto);
-    setState(() {
-      _gastosRegistrados.remove(gasto);
-    });
+    ref.read(GastosUsuarioProvider.notifier).removerGasto(gasto);
+
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: const Text("Gasto eliminado"),
@@ -45,7 +37,7 @@ class _Gastos extends State<Gastos> {
         label: "Deshacer",
         onPressed: () {
           setState(() {
-            _gastosRegistrados.insert(index, gasto);
+            ref.read(GastosUsuarioProvider.notifier).agregarGasto(gasto.id, gasto.title, gasto.amount, gasto.date, gasto.categoria);
           });
         },
       ),
@@ -63,14 +55,16 @@ class _Gastos extends State<Gastos> {
 
   @override
   Widget build(BuildContext context) {
+    final gastosRegistrados = ref.watch(GastosUsuarioProvider);
+
     final width = MediaQuery.of(context).size.width;
 
     Widget mainContent = const Center(
       child: Text("No se encontraron gastos."),
     );
-    if (_gastosRegistrados.isNotEmpty) {
+    if (gastosRegistrados.isNotEmpty) {
       mainContent = ListaGastos(
-        gastos: _gastosRegistrados,
+        gastos: gastosRegistrados,
         onRemoveGasto: _removeGasto,
       );
     }
@@ -87,27 +81,31 @@ class _Gastos extends State<Gastos> {
               onPressed: _abrirAddGastoOverlay, icon: const Icon(Icons.add))
         ],
       ),
-      body: Center(
-        child: width < 600
-            ? Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Grafica(expenses: _gastosRegistrados),
-                  Expanded(
-                    child: mainContent,
-                  ),
-                ],
-              )
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(child: Grafica(expenses: _gastosRegistrados)),
-                  const SizedBox(width: 60,),
-                  Expanded(
-                    child: mainContent,
-                  ),
-                ],
-              ),
+      body: FutureBuilder(
+        future: _gastosFuture,
+        builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting ? const Center(child: CircularProgressIndicator(),):
+        Center(
+          child: width < 600
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Grafica(expenses: gastosRegistrados),
+                    Expanded(
+                      child: mainContent,
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(child: Grafica(expenses: gastosRegistrados)),
+                    const SizedBox(width: 60,),
+                    Expanded(
+                      child: mainContent,
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }

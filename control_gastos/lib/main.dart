@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:control_gastos/gastos.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 //import 'package:flutter/services.dart';
 
 var KColorScheme =
@@ -9,7 +10,7 @@ void main() {
   //WidgetsFlutterBinding.ensureInitialized();
   //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((fn) {});
 
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
